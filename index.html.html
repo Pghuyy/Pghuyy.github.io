@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tìm kiếm xem ai đang thích bạn nè!? 💗</title>
+
+<style>
+body{
+  margin:0;
+  background: linear-gradient(135deg,#d9f7f3,#eefcff);
+  font-family:-apple-system, BlinkMacSystemFont, system-ui, Arial;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  overflow:hidden;
+  color:#2b4f60;
+}
+
+.box{
+  width:180%;
+  max-width:450px;
+  background:rgba(255,255,255,0.75);
+  backdrop-filter: blur(20px);
+  padding:26px;
+  border-radius:26px;
+  box-shadow:0 18px 45px rgba(0,0,0,0.15);
+  text-align:center;
+}
+
+h2{margin-top:0}
+
+input{
+  width:100%;
+  padding:14px;
+  border-radius:25px;
+  border:1px solid #bfe9e4;
+  margin-top:10px;
+  font-size:16px;
+}
+
+button{
+  margin-top:12px;
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:25px;
+  background:#7be0d6;
+  color:white;
+  font-size:17px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+button:active{transform:scale(0.96)}
+
+#noBtn{
+  background:#e8f8f6;
+  color:#4f7c7a;
+  position:relative;
+}
+
+#beg{
+  margin-top:10px;
+  font-size:14px;
+  opacity:.75;
+}
+
+.progress{
+  width:100%;
+  height:16px;
+  background:#eefcff;
+  border-radius:20px;
+  margin-top:18px;
+  overflow:hidden;
+}
+
+.bar{
+  height:100%;
+  width:0%;
+  background:#7be0d6;
+}
+
+.log{
+  margin-top:14px;
+  text-align:left;
+  height:120px;
+  overflow:hidden;
+  font-size:14px;
+}
+
+.heart{
+  position:absolute;
+  color:#7be0d6;
+  animation: float 6s linear infinite;
+  pointer-events:none;
+}
+
+@keyframes float{
+  from{transform:translateY(100vh)}
+  to{transform:translateY(-10vh)}
+}
+</style>
+</head>
+
+<body>
+
+<div class="box" id="main">
+
+<h2>Này bạn đáng yêu🐧</h2>
+<p>Bạn có muốn biết ai đang thầm thích bạn không? ✨</p>
+
+<button onclick="goName()">Có </button>
+<button id="noBtn">Không </button>
+
+<p id="beg">🥺 Đừng chọn Không mà...</p>
+
+</div>
+
+<script>
+
+/* ===== NÚT KHÔNG KHÔNG BAO GIỜ BỊ BẤM ===== */
+
+let moving = false;   // đang chạy hay không
+let cooldown = false; // tránh spam
+
+function moveBtn(){
+
+  if(moving || cooldown) return;
+
+  const btn = document.getElementById("noBtn");
+  if(!btn) return;
+
+  moving = true;
+  cooldown = true;
+
+  btn.style.position = "fixed";
+  btn.style.transition = "left .35s ease, top .35s ease";
+
+  const maxX = window.innerWidth - btn.offsetWidth - 10;
+  const maxY = window.innerHeight - btn.offsetHeight - 10;
+
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
+
+  btn.style.left = x + "px";
+  btn.style.top = y + "px";
+
+  btn.style.transform =
+    `translate(${Math.random()*12-6}px,${Math.random()*12-6}px)`;
+
+  document.getElementById("beg").innerText =
+  ["🥺 Đừng chọn Không mà...",
+   "💗 Chọn Có đi mà...",
+   "😳 Tò mò chút thôi...",
+   "🥹 Bấm Có nhaaa",
+   "💘 Tin mình đi..."
+  ][Math.floor(Math.random()*5)];
+
+  setTimeout(()=> moving = false, 350);
+  setTimeout(()=> cooldown = false, 200);
+}
+
+
+/* chuột lại gần */
+document.addEventListener("mousemove", e => {
+
+  const btn = document.getElementById("noBtn");
+  if(!btn) return;
+
+  const rect = btn.getBoundingClientRect();
+
+  const dx = e.clientX - (rect.left + rect.width/2);
+  const dy = e.clientY - (rect.top + rect.height/2);
+
+  const dist = Math.sqrt(dx*dx + dy*dy);
+
+  if(dist < 140) moveBtn();
+
+});
+
+
+/* mobile */
+document.addEventListener("touchstart", moveBtn);
+
+
+/* click trúng vẫn chạy */
+document.addEventListener("click", e => {
+  if(e.target.id === "noBtn") moveBtn();
+});
+
+/* ===== NHẬP TÊN ===== */
+
+function goName(){
+  document.getElementById("main").innerHTML=`
+    <h2>Tìm kiếm xem ai đang thích bạn nè!? 💗</h2>
+    <p>Nhập tên của bạn:</p>
+    <input id="name" placeholder="Tên của bạn...">
+    <button onclick="scan()">Khám phá ✨</button>
+  `;
+}
+
+
+/* ===== QUÉT ===== */
+
+function scan(){
+
+  const name=document.getElementById("name").value || "Bạn";
+
+  document.getElementById("main").innerHTML=`
+  <h2>Đang kết nối trái tim...</h2>
+
+  <div class="progress">
+    <div class="bar" id="bar"></div>
+  </div>
+
+  <div class="log" id="log"></div>
+  `;
+
+  const logs=[
+    "🔍 Đang quét thông tin...",
+    "Đang quét toàn bộ photos trong điện thoại...",
+  "💫 Đồng bộ năng lượng",
+  "💬 Phân tích người hay nhắn tin",
+  "📸 Xem lại khoảnh khắc đáng yêu",
+  "😳 Phát hiện ánh mắt đặc biệt",
+  "💗 Tìm thấy tín hiệu rung động",
+  "✨ Đang xác định danh tính..."
+  ];
+
+  let p=0;
+  let i=0;
+
+  const bar=document.getElementById("bar");
+  const log=document.getElementById("log");
+
+  const interval=setInterval(()=>{
+
+    p+=2;
+    bar.style.width=p+"%";
+
+    if(p%14===0 && i<logs.length){
+      const line=document.createElement("div");
+      line.textContent=logs[i];
+      log.appendChild(line);
+      log.scrollTop=log.scrollHeight;
+      i++;
+    }
+
+    if(p>=100){
+      clearInterval(interval);
+
+      setTimeout(()=>{
+        document.getElementById("main").innerHTML=`
+        <h2>Kết quả cho <b>${name}</b> 💗</h2>
+        <p>Người thầm thích bạn là...</p>
+        <h1>CHÍNH BẠN 🤡</h1>
+        <p>Tự yêu bản thân cũng tốt mà 💙✨</p>
+        `;
+      },900);
+    }
+
+},160);   // mỗi bước lâu hơn để tăng sự hồi hộp
+}
+
+
+/* ===== TRÁI TIM BAY ===== */
+
+setInterval(()=>{
+  const heart=document.createElement("div");
+  heart.className="heart";
+  heart.innerHTML="💗";
+  heart.style.left=Math.random()*100+"vw";
+  heart.style.fontSize=(Math.random()*18+12)+"px";
+  document.body.appendChild(heart);
+  setTimeout(()=>heart.remove(),6000);
+},450);
+
+</script>
+
+</body>
+</html>
