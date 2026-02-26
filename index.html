@@ -137,6 +137,7 @@ body.flash{
 <script>
   let savedName = "Bạn";
 let lastResult = null;
+  let scanCount = 0;
 
 /* ===== NÚT KHÔNG CHẠY TRỐN ===== */
 
@@ -277,21 +278,42 @@ function showResult(name){
       pool[Math.floor(Math.random()*pool.length)];
   },80);
 
- // 🎯 Sau 3s → chốt
+// 🎯 Sau 3s → chốt
 setTimeout(()=>{
 
   clearInterval(spin);
 
   let final;
 
-  // 👉 tránh trùng kết quả trước
-  do{
-    final = results[Math.floor(Math.random()*results.length)];
-  } while(final === lastResult);
+  // 💚 LẦN QUÉT ĐẦU → chính bạn
+  if(scanCount === 0){
+
+    final = `
+      👉 Chính bạn 💗
+      <div style="
+        margin-top:12px;
+        font-size:16px;
+        opacity:0.85;
+        color:#3bb7b7;
+        font-style:italic;
+      ">
+        Tự yêu bản thân cũng tốt mà 💚
+      </div>
+    `;
+
+  }else{
+
+    // 🎲 Các lần sau → random + không trùng
+    do{
+      final = results[Math.floor(Math.random()*results.length)];
+    }while(final === lastResult);
+
+  }
 
   lastResult = final;
+  scanCount++; // ⭐ tăng số lần quét
 
-  resultEl.textContent = final;
+  resultEl.innerHTML = final; // ⚠️ dùng innerHTML để hiện dòng phụ
 
   // 💥 flash
   document.body.classList.add("flash");
@@ -304,7 +326,7 @@ setTimeout(()=>{
 
 },3000);
   }
-
+  
 /* ===== TIM BAY ===== */
 
 function createHeart(){
@@ -322,6 +344,7 @@ setInterval(createHeart,450);
 </script>
 </body>
 </html>
+
 
 
 
