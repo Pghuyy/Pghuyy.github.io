@@ -135,6 +135,8 @@ body.flash{
 </div>
 
 <script>
+  let savedName = "Bạn";
+let lastResult = null;
 
 /* ===== NÚT KHÔNG CHẠY TRỐN ===== */
 
@@ -183,7 +185,8 @@ function goName(){
 
 function scan(){
 
-  const name=document.getElementById("name").value || "Bạn";
+  const name = document.getElementById("name")?.value || savedName || "Bạn";
+  savedName = name;   // ⭐ lưu tên để quét lại không cần nhập
 
   document.getElementById("main").innerHTML=`
     <h2>Đang kết nối trái tim...</h2>
@@ -271,26 +274,33 @@ function showResult(name){
       pool[Math.floor(Math.random()*pool.length)];
   },70);
 
-  // ⏱️ SAU 2s → CHỐT 1
-  setTimeout(()=>{
+ // 🎯 Sau 2s → chốt
+setTimeout(()=>{
 
-    clearInterval(spin);
+  clearInterval(spin);
 
-    const final =
-      pool[Math.floor(Math.random()*pool.length)];
+  let final;
 
-    resultEl.textContent = final;
+  // 👉 tránh trùng kết quả trước
+  do{
+    final = results[Math.floor(Math.random()*results.length)];
+  } while(final === lastResult);
 
-    /* flash */
-    document.body.classList.add("flash");
-    setTimeout(()=>document.body.classList.remove("flash"),300);
+  lastResult = final;
 
-    /* tim nổ */
-    for(let i=0;i<30;i++) createHeart();
+  resultEl.textContent = final;
 
-  },2000);
-}
+  // 💥 flash
+  document.body.classList.add("flash");
+  setTimeout(()=>document.body.classList.remove("flash"),300);
 
+  // 💗 tim nổ
+  for(let i=0;i<30;i++){
+    createHeart();
+  }
+
+},2000);
+  }
 
 /* ===== TIM BAY ===== */
 
@@ -309,3 +319,4 @@ setInterval(createHeart,450);
 </script>
 </body>
 </html>
+
