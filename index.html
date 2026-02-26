@@ -101,6 +101,15 @@ button:active{transform:scale(0.96)}
   from{transform:translateY(100vh)}
   to{transform:translateY(-10vh)}
 }
+  /* FLASH */
+body.flash{
+  animation: flash 0.3s;
+}
+
+@keyframes flash{
+  from{background:white}
+  to{background:linear-gradient(135deg,#d9f7f3,#eefcff)}
+}
 </style>
 </head>
 
@@ -120,10 +129,11 @@ button:active{transform:scale(0.96)}
 
 <script>
 
-/* ===== NÚT KHÔNG KHÔNG BAO GIỜ BỊ BẤM ===== */
+/* ===== NÚT KHÔNG HOẢNG LOẠN ===== */
 
-let moving = false;   // đang chạy hay không
-let cooldown = false; // tránh spam
+let moving = false;
+let cooldown = false;
+let escapeCount = 0;
 
 function moveBtn(){
 
@@ -134,9 +144,9 @@ function moveBtn(){
 
   moving = true;
   cooldown = true;
+  escapeCount++;
 
   btn.style.position = "fixed";
-  btn.style.transition = "left .35s ease, top .35s ease";
 
   const maxX = window.innerWidth - btn.offsetWidth - 10;
   const maxY = window.innerHeight - btn.offsetHeight - 10;
@@ -147,8 +157,15 @@ function moveBtn(){
   btn.style.left = x + "px";
   btn.style.top = y + "px";
 
+  /* nhỏ dần + rung */
   btn.style.transform =
-    `translate(${Math.random()*12-6}px,${Math.random()*12-6}px)`;
+    `scale(${Math.max(0.4, 1 - escapeCount*0.03)}) 
+     translate(${Math.random()*20-10}px,${Math.random()*20-10}px)`;
+
+  /* chạy nhanh dần */
+  const speed = Math.max(0.12, 0.4 - escapeCount*0.02);
+
+  btn.style.transition = `left ${speed}s ease, top ${speed}s ease`;
 
   document.getElementById("beg").innerText =
   ["🥺 Đừng chọn Không mà...",
@@ -158,8 +175,8 @@ function moveBtn(){
    "💘 Tin mình đi..."
   ][Math.floor(Math.random()*5)];
 
-  setTimeout(()=> moving = false, 350);
-  setTimeout(()=> cooldown = false, 200);
+  setTimeout(()=> moving = false, speed*1000);
+  setTimeout(()=> cooldown = false, 120);
 }
 
 
@@ -180,15 +197,14 @@ document.addEventListener("mousemove", e => {
 
 });
 
-
 /* mobile */
 document.addEventListener("touchstart", moveBtn);
-
 
 /* click trúng vẫn chạy */
 document.addEventListener("click", e => {
   if(e.target.id === "noBtn") moveBtn();
 });
+
 
 /* ===== NHẬP TÊN ===== */
 
@@ -202,7 +218,7 @@ function goName(){
 }
 
 
-/* ===== QUÉT ===== */
+/* ===== SCAN ===== */
 
 function scan(){
 
@@ -220,13 +236,12 @@ function scan(){
 
   const logs=[
     "🔍 Đang quét thông tin...",
-    "Đang quét toàn bộ photos trong điện thoại...",
-  "💫 Đồng bộ năng lượng",
-  "💬 Phân tích người hay nhắn tin",
-  "📸 Xem lại khoảnh khắc đáng yêu",
-  "😳 Phát hiện ánh mắt đặc biệt",
-  "💗 Tìm thấy tín hiệu rung động",
-  "✨ Đang xác định danh tính..."
+    "🧠 Phân tích lịch sử crush...",
+    "💬 Phân tích người hay nhắn tin",
+    "📸 Xem lại khoảnh khắc đáng yêu",
+    "😳 Phát hiện ánh mắt đặc biệt",
+    "💗 Tìm thấy tín hiệu rung động",
+    "✨ Đang xác định danh tính..."
   ];
 
   let p=0;
@@ -252,32 +267,59 @@ function scan(){
       clearInterval(interval);
 
       setTimeout(()=>{
+
+        /* KẾT QUẢ RANDOM */
+        const results = [
+          "CHÍNH BẠN 🤡",
+          "Người ngồi cạnh bạn 😳",
+          "Một người đang đọc kết quả này 💗",
+          "Người bạn không ngờ tới 😏",
+          "TOP SECRET 🔒",
+          "Hệ thống từ chối tiết lộ 😶"
+        ];
+
+        const result = results[Math.floor(Math.random()*results.length)];
+
         document.getElementById("main").innerHTML=`
         <h2>Kết quả cho <b>${name}</b> 💗</h2>
         <p>Người thầm thích bạn là...</p>
-        <h1>CHÍNH BẠN 🤡</h1>
+        <h1>${result}</h1>
         <p>Tự yêu bản thân cũng tốt mà 💙✨</p>
         `;
+
+        /* FLASH */
+        document.body.classList.add("flash");
+        setTimeout(()=>document.body.classList.remove("flash"),300);
+
+        /* NỔ TIM */
+        for(let i=0;i<30;i++){
+          createHeart();
+        }
+
       },900);
     }
 
-},160);   // mỗi bước lâu hơn để tăng sự hồi hộp
+  },160);
 }
 
 
 /* ===== TRÁI TIM BAY ===== */
 
-setInterval(()=>{
+function createHeart(){
   const heart=document.createElement("div");
   heart.className="heart";
   heart.innerHTML="💗";
   heart.style.left=Math.random()*100+"vw";
-  heart.style.fontSize=(Math.random()*18+12)+"px";
+  heart.style.fontSize=(Math.random()*22+14)+"px";
   document.body.appendChild(heart);
   setTimeout(()=>heart.remove(),6000);
-},450);
+}
+
+/* tim bay nền */
+setInterval(createHeart,450);
 
 </script>
 
 </body>
 </html>
+
