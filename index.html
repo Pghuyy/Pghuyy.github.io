@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tìm kiếm xem ai đang thích bạn nè!? 💗</title>
+<title>Tìm xem ai thích bạn 💗</title>
 
 <style>
 body{
   margin:0;
   background: linear-gradient(135deg,#d9f7f3,#eefcff);
-  font-family:-apple-system, BlinkMacSystemFont, system-ui, Arial;
+  font-family:system-ui, Arial;
   display:flex;
   justify-content:center;
   align-items:center;
@@ -19,8 +19,8 @@ body{
 }
 
 .box{
-  width:180%;
-  max-width:450px;
+  width:92%;
+  max-width:420px;
   background:rgba(255,255,255,0.75);
   backdrop-filter: blur(20px);
   padding:26px;
@@ -28,8 +28,6 @@ body{
   box-shadow:0 18px 45px rgba(0,0,0,0.15);
   text-align:center;
 }
-
-h2{margin-top:0}
 
 input{
   width:100%;
@@ -57,15 +55,8 @@ button:active{transform:scale(0.96)}
 
 #noBtn{
   background: linear-gradient(135deg,#ff4d6d,#ff0033);
-  color:white;
+  box-shadow:0 6px 18px rgba(255,0,60,0.35);
   position:relative;
-  box-shadow: 0 6px 18px rgba(255,0,60,0.35);
-}
-
-#beg{
-  margin-top:10px;
-  font-size:14px;
-  opacity:.75;
 }
 
 .progress{
@@ -91,18 +82,18 @@ button:active{transform:scale(0.96)}
   font-size:14px;
 }
 
-.heart{
-  position:absolute;
-  color:#7be0d6;
-  animation: float 6s linear infinite;
-  pointer-events:none;
+/* scan nhấp nháy */
+body.scanning{
+  animation: scanFlash 0.7s infinite;
 }
 
-@keyframes float{
-  from{transform:translateY(100vh)}
-  to{transform:translateY(-10vh)}
+@keyframes scanFlash{
+  0%{filter:brightness(1)}
+  50%{filter:brightness(1.25)}
+  100%{filter:brightness(1)}
 }
-  /* FLASH */
+
+/* flash khi ra kết quả */
 body.flash{
   animation: flash 0.3s;
 }
@@ -111,31 +102,22 @@ body.flash{
   from{background:white}
   to{background:linear-gradient(135deg,#d9f7f3,#eefcff)}
 }
-  body.scanning{
-  animation: scanFlash 0.7s infinite;
+
+/* tim bay */
+.heart{
+  position:absolute;
+  animation: float 6s linear infinite;
+  pointer-events:none;
 }
 
-@keyframes scanFlash{
-  0%   { filter: brightness(1); }
-  50%  { filter: brightness(1.25); }
-  100% { filter: brightness(1); }
-}
-  .again-btn{
-  margin-top:18px;
-  padding:12px 22px;
-  font-size:16px;
-  border:none;
-  border-radius:14px;
-  background:linear-gradient(135deg,#ff7aa2,#ffb6c1);
-  color:white;
-  cursor:pointer;
-  font-weight:bold;
-  transition:.2s;
+@keyframes float{
+  from{transform:translateY(100vh)}
+  to{transform:translateY(-10vh)}
 }
 
-.again-btn:hover{
-  transform:scale(1.07);
-  box-shadow:0 6px 18px rgba(0,0,0,.2);
+.again-btn{
+  margin-top:14px;
+  background:#ff9ecb;
 }
 </style>
 </head>
@@ -144,92 +126,45 @@ body.flash{
 
 <div class="box" id="main">
 
-<h2>Này bạn đáng yêu🐧</h2>
-<p>Bạn có muốn biết ai đang thầm thích bạn không? ✨</p>
+<h2>Này bạn đáng yêu 🐧</h2>
+<p>Bạn có muốn biết ai đang thích bạn không? ✨</p>
 
-<button onclick="goName()">Có </button>
-<button id="noBtn">Không </button>
-
-<p id="beg">🥺 Đừng chọn Không mà...</p>
+<button onclick="goName()">Có</button>
+<button id="noBtn">Không</button>
 
 </div>
 
 <script>
 
-/* ===== NÚT KHÔNG HOẢNG LOẠN ===== */
-
-let moving = false;
-let cooldown = false;
-let escapeCount = 0;
+/* ===== NÚT KHÔNG CHẠY TRỐN ===== */
 
 function moveBtn(){
-
-  if(moving || cooldown) return;
-
-  const btn = document.getElementById("noBtn");
+  const btn=document.getElementById("noBtn");
   if(!btn) return;
 
-  moving = true;
-  cooldown = true;
-  escapeCount++;
+  btn.style.position="fixed";
 
-  btn.style.position = "fixed";
+  const x=Math.random()*(window.innerWidth-btn.offsetWidth);
+  const y=Math.random()*(window.innerHeight-btn.offsetHeight);
 
-  const maxX = window.innerWidth - btn.offsetWidth - 10;
-  const maxY = window.innerHeight - btn.offsetHeight - 10;
-
-  const x = Math.random() * maxX;
-  const y = Math.random() * maxY;
-
-  btn.style.left = x + "px";
-  btn.style.top = y + "px";
-
-  /* nhỏ dần + rung */
-  btn.style.transform =
-    `scale(${Math.max(0.4, 1 - escapeCount*0.03)}) 
-     translate(${Math.random()*20-10}px,${Math.random()*20-10}px)`;
-
-  /* chạy nhanh dần */
-  const speed = Math.max(0.12, 0.4 - escapeCount*0.02);
-
-  btn.style.transition = `left ${speed}s ease, top ${speed}s ease`;
-
-  document.getElementById("beg").innerText =
-  ["🥺 Đừng chọn Không mà...",
-   "💗 Chọn Có đi mà...",
-   "😳 Tò mò chút thôi...",
-   "🥹 Bấm Có nhaaa",
-   "💘 Tin t đii..."
-  ][Math.floor(Math.random()*5)];
-
-  setTimeout(()=> moving = false, speed*1000);
-  setTimeout(()=> cooldown = false, 120);
+  btn.style.left=x+"px";
+  btn.style.top=y+"px";
 }
 
-
-/* chuột lại gần */
-document.addEventListener("mousemove", e => {
-
-  const btn = document.getElementById("noBtn");
+document.addEventListener("mousemove",e=>{
+  const btn=document.getElementById("noBtn");
   if(!btn) return;
 
-  const rect = btn.getBoundingClientRect();
+  const rect=btn.getBoundingClientRect();
+  const dx=e.clientX-(rect.left+rect.width/2);
+  const dy=e.clientY-(rect.top+rect.height/2);
+  const dist=Math.sqrt(dx*dx+dy*dy);
 
-  const dx = e.clientX - (rect.left + rect.width/2);
-  const dy = e.clientY - (rect.top + rect.height/2);
-
-  const dist = Math.sqrt(dx*dx + dy*dy);
-
-  if(dist < 140) moveBtn();
-
+  if(dist<120) moveBtn();
 });
 
-/* mobile */
-document.addEventListener("touchstart", moveBtn);
-
-/* click trúng vẫn chạy */
-document.addEventListener("click", e => {
-  if(e.target.id === "noBtn") moveBtn();
+document.addEventListener("click",e=>{
+  if(e.target.id==="noBtn") moveBtn();
 });
 
 
@@ -237,8 +172,7 @@ document.addEventListener("click", e => {
 
 function goName(){
   document.getElementById("main").innerHTML=`
-    <h2>Tìm kiếm xem ai đang thích bạn nè!? 💗</h2>
-    <p>Nhập tên của bạn:</p>
+    <h2>Nhập tên của bạn 💗</h2>
     <input id="name" placeholder="Tên của bạn...">
     <button onclick="scan()">Khám phá ✨</button>
   `;
@@ -251,31 +185,28 @@ function scan(){
 
   const name=document.getElementById("name").value || "Bạn";
 
- document.getElementById("main").innerHTML=`
-  <h2>Đang kết nối trái tim...</h2>
+  document.getElementById("main").innerHTML=`
+    <h2>Đang kết nối trái tim...</h2>
 
-  <div class="progress">
-    <div class="bar" id="bar"></div>
-  </div>
+    <div class="progress">
+      <div class="bar" id="bar"></div>
+    </div>
 
-  <div class="log" id="log"></div>
-`;
+    <div class="log" id="log"></div>
+  `;
 
-// ⭐ Bật hiệu ứng nhấp nháy
-document.body.classList.add("scanning");
+  document.body.classList.add("scanning");
+
   const logs=[
     "🔍 Đang quét thông tin...",
-    " 💬 Đang quét messenger",
     "💬 Phân tích người hay nhắn tin",
-    "📸 Xem lại khoảnh khắc đáng yêu",
-    "😳 Phát hiện ánh mắt đặc biệt",
-    "💗 Tìm thấy tín hiệu rung động",
-    "✨ Đang xác định danh tính..."
+    "📸 Xem lại khoảnh khắc",
+    "😳 Phát hiện tín hiệu",
+    "💗 Tìm thấy rung động",
+    "✨ Xác định danh tính..."
   ];
 
-  let p=0;
-  let i=0;
-
+  let p=0,i=0;
   const bar=document.getElementById("bar");
   const log=document.getElementById("log");
 
@@ -286,125 +217,95 @@ document.body.classList.add("scanning");
 
     if(p%14===0 && i<logs.length){
       const line=document.createElement("div");
-      line.textContent=logs[i];
+      line.textContent=logs[i++];
       log.appendChild(line);
       log.scrollTop=log.scrollHeight;
-      i++;
     }
 
-   if(p>=100){
-  clearInterval(interval);
-
-  // ⭐ THÊM DÒNG NÀY
-  document.body.classList.remove("scanning");
-
-  setTimeout(()=>{
-    if(p>=150){
-  clearInterval(interval);
-
-  document.body.classList.remove("scanning");
-
-  setTimeout(()=>{
-    document.getElementById("main").innerHTML=`
-      <h2>Kết quả cho <b>${name}</b> 💗</h2>
-      ...
-    `;
-  },900);
-}
-    // trở lại nền cũ sau 1.5 giây
-setTimeout(()=>{
-  document.body.style.background =
-    "linear-gradient(135deg,#d9f7f3,#eefcff)";
-},1500);
-
-   /* 🎲 RANDOM 4 KẾT QUẢ → CHỌN 1 */
-
-const results = [
-  "CHÍNH BẠN 😳",
-  "Người bạn đang để mắt tới 👀",
-  "Một người rất gần 💗",
-  "Người bạn không ngờ 😏",
-  "TOP SECRET 🔒",
-  "Người đang đọc kết quả này 🤭"
-];
-
-// 👉 Lấy 4 kết quả KHÁC nhau
-let chosen = [];
-
-while(chosen.length < 4){
-  let r = results[Math.floor(Math.random()*results.length)];
-  if(!chosen.includes(r)) chosen.push(r);
-}
-
-
-// 👉 Hiển thị khung trước
-document.getElementById("main").innerHTML=`
-  <div class="result-box">
-    <h2>Kết quả cho <b>${name}</b> 💗</h2>
-    <p>Đang chọn đối tượng phù hợp nhất...</p>
-    <h1 id="finalResult">🤖 Phân tích...</h1>
-  </div>
-`;
-
-
-// 🎰 Quay lần lượt 4 kết quả
-let i = 0;
-
-let spin = setInterval(()=>{
-  document.getElementById("finalResult").textContent = chosen[i];
-  i++;
-
-  if(i >= 4){
-    clearInterval(spin);
-
-    // 💖 chốt kết quả cuối
-    setTimeout(()=>{
-      document.getElementById("finalResult").textContent = chosen[3];
-
-      // 👉 thêm nút quét lại
-      document.querySelector(".result-box").innerHTML += `
-        <p style="margin-top:10px">Không thể sai được 😌✨</p>
-        <button class="again-btn" onclick="scan()">🔄 Quét lại</button>
-      `;
-    },500);
-  }
-
-},600);
-
-        /* FLASH */
-        document.body.classList.add("flash");
-        setTimeout(()=>document.body.classList.remove("flash"),300);
-
-        /* NỔ TIM */
-        for(let i=0;i<30;i++){
-          createHeart();
-        }
-
-      },900);
+    if(p>=100){
+      clearInterval(interval);
+      document.body.classList.remove("scanning");
+      showResult(name);
     }
 
   },160);
 }
 
 
-/* ===== TRÁI TIM BAY ===== */
+/* ===== KẾT QUẢ ===== */
 
-function createHeart(){
-  const heart=document.createElement("div");
-  heart.className="heart";
-  heart.innerHTML="💗";
-  heart.style.left=Math.random()*100+"vw";
-  heart.style.fontSize=(Math.random()*22+14)+"px";
-  document.body.appendChild(heart);
-  setTimeout(()=>heart.remove(),6000);
+function showResult(name){
+
+  const results=[
+    "CHÍNH BẠN 😳",
+    "Người ngồi cạnh bạn 👀",
+    "Một người rất gần 💗",
+    "Người bạn không ngờ 😏",
+    "TOP SECRET 🔒",
+    "Người đang đọc kết quả này 🤭",
+    "Crush bí mật 💘",
+    "Bạn thân giả vờ vô tư 😶"
+  ];
+
+  // 🎯 CHỌN NGẪU NHIÊN 5 KẾT QUẢ
+  const pool=[];
+  while(pool.length<5){
+    const r=results[Math.floor(Math.random()*results.length)];
+    if(!pool.includes(r)) pool.push(r);
+  }
+
+  document.getElementById("main").innerHTML=`
+    <h2>Kết quả cho <b>${name}</b> 💗</h2>
+    <p>Đang chọn người phù hợp nhất...</p>
+
+    <h1 id="finalResult">🤖 Phân tích...</h1>
+
+    <button class="again-btn" onclick="scan()">🔄 Quét lại</button>
+  `;
+
+  const resultEl=document.getElementById("finalResult");
+
+  // 🎰 XOAY LIÊN TỤC TRONG 5 KQ
+  const spin=setInterval(()=>{
+    resultEl.textContent =
+      pool[Math.floor(Math.random()*pool.length)];
+  },70);
+
+  // ⏱️ SAU 2s → CHỐT 1
+  setTimeout(()=>{
+
+    clearInterval(spin);
+
+    const final =
+      pool[Math.floor(Math.random()*pool.length)];
+
+    resultEl.textContent = final;
+
+    /* flash */
+    document.body.classList.add("flash");
+    setTimeout(()=>document.body.classList.remove("flash"),300);
+
+    /* tim nổ */
+    for(let i=0;i<30;i++) createHeart();
+
+  },2000);
 }
 
-/* tim bay nền */
+
+/* ===== TIM BAY ===== */
+
+function createHeart(){
+  const h=document.createElement("div");
+  h.className="heart";
+  h.textContent="💗";
+  h.style.left=Math.random()*100+"vw";
+  h.style.fontSize=(Math.random()*20+14)+"px";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+}
+
 setInterval(createHeart,450);
 
 </script>
-
 </body>
 </html>
-
-
