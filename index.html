@@ -56,9 +56,10 @@ button{
 button:active{transform:scale(0.96)}
 
 #noBtn{
-  background:#e8f8f6;
-  color:#4f7c7a;
+  background: linear-gradient(135deg,#ff4d6d,#ff0033);
+  color:white;
   position:relative;
+  box-shadow: 0 6px 18px rgba(255,0,60,0.35);
 }
 
 #beg{
@@ -109,6 +110,32 @@ body.flash{
 @keyframes flash{
   from{background:white}
   to{background:linear-gradient(135deg,#d9f7f3,#eefcff)}
+}
+  body.scanning{
+  animation: scanFlash 0.7s infinite;
+}
+
+@keyframes scanFlash{
+  0%   { filter: brightness(1); }
+  50%  { filter: brightness(1.25); }
+  100% { filter: brightness(1); }
+}
+  .again-btn{
+  margin-top:18px;
+  padding:12px 22px;
+  font-size:16px;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(135deg,#ff7aa2,#ffb6c1);
+  color:white;
+  cursor:pointer;
+  font-weight:bold;
+  transition:.2s;
+}
+
+.again-btn:hover{
+  transform:scale(1.07);
+  box-shadow:0 6px 18px rgba(0,0,0,.2);
 }
 </style>
 </head>
@@ -172,7 +199,7 @@ function moveBtn(){
    "💗 Chọn Có đi mà...",
    "😳 Tò mò chút thôi...",
    "🥹 Bấm Có nhaaa",
-   "💘 Tin mình đi..."
+   "💘 Tin t đii..."
   ][Math.floor(Math.random()*5)];
 
   setTimeout(()=> moving = false, speed*1000);
@@ -224,7 +251,7 @@ function scan(){
 
   const name=document.getElementById("name").value || "Bạn";
 
-  document.getElementById("main").innerHTML=`
+ document.getElementById("main").innerHTML=`
   <h2>Đang kết nối trái tim...</h2>
 
   <div class="progress">
@@ -232,11 +259,13 @@ function scan(){
   </div>
 
   <div class="log" id="log"></div>
-  `;
+`;
 
+// ⭐ Bật hiệu ứng nhấp nháy
+document.body.classList.add("scanning");
   const logs=[
     "🔍 Đang quét thông tin...",
-    "🧠 Phân tích lịch sử crush...",
+    " 💬 Đang quét messenger",
     "💬 Phân tích người hay nhắn tin",
     "📸 Xem lại khoảnh khắc đáng yêu",
     "😳 Phát hiện ánh mắt đặc biệt",
@@ -263,29 +292,84 @@ function scan(){
       i++;
     }
 
-    if(p>=100){
-      clearInterval(interval);
+   if(p>=100){
+  clearInterval(interval);
 
-      setTimeout(()=>{
+  // ⭐ THÊM DÒNG NÀY
+  document.body.classList.remove("scanning");
 
-        /* KẾT QUẢ RANDOM */
-        const results = [
-          "CHÍNH BẠN 🤡",
-          "Người ngồi cạnh bạn 😳",
-          "Một người đang đọc kết quả này 💗",
-          "Người bạn không ngờ tới 😏",
-          "TOP SECRET 🔒",
-          "Hệ thống từ chối tiết lộ 😶"
-        ];
+  setTimeout(()=>{
+    if(p>=150){
+  clearInterval(interval);
 
-        const result = results[Math.floor(Math.random()*results.length)];
+  document.body.classList.remove("scanning");
 
-        document.getElementById("main").innerHTML=`
-        <h2>Kết quả cho <b>${name}</b> 💗</h2>
-        <p>Người thầm thích bạn là...</p>
-        <h1>${result}</h1>
-        <p>Tự yêu bản thân cũng tốt mà 💙✨</p>
-        `;
+  setTimeout(()=>{
+    document.getElementById("main").innerHTML=`
+      <h2>Kết quả cho <b>${name}</b> 💗</h2>
+      ...
+    `;
+  },900);
+}
+    // trở lại nền cũ sau 1.5 giây
+setTimeout(()=>{
+  document.body.style.background =
+    "linear-gradient(135deg,#d9f7f3,#eefcff)";
+},1500);
+
+   /* 🎲 RANDOM 4 KẾT QUẢ → CHỌN 1 */
+
+const results = [
+  "CHÍNH BẠN 😳",
+  "Người bạn đang để mắt tới 👀",
+  "Một người rất gần 💗",
+  "Người bạn không ngờ 😏",
+  "TOP SECRET 🔒",
+  "Người đang đọc kết quả này 🤭"
+];
+
+// 👉 Lấy 4 kết quả KHÁC nhau
+let chosen = [];
+
+while(chosen.length < 4){
+  let r = results[Math.floor(Math.random()*results.length)];
+  if(!chosen.includes(r)) chosen.push(r);
+}
+
+
+// 👉 Hiển thị khung trước
+document.getElementById("main").innerHTML=`
+  <div class="result-box">
+    <h2>Kết quả cho <b>${name}</b> 💗</h2>
+    <p>Đang chọn đối tượng phù hợp nhất...</p>
+    <h1 id="finalResult">🤖 Phân tích...</h1>
+  </div>
+`;
+
+
+// 🎰 Quay lần lượt 4 kết quả
+let i = 0;
+
+let spin = setInterval(()=>{
+  document.getElementById("finalResult").textContent = chosen[i];
+  i++;
+
+  if(i >= 4){
+    clearInterval(spin);
+
+    // 💖 chốt kết quả cuối
+    setTimeout(()=>{
+      document.getElementById("finalResult").textContent = chosen[3];
+
+      // 👉 thêm nút quét lại
+      document.querySelector(".result-box").innerHTML += `
+        <p style="margin-top:10px">Không thể sai được 😌✨</p>
+        <button class="again-btn" onclick="scan()">🔄 Quét lại</button>
+      `;
+    },500);
+  }
+
+},600);
 
         /* FLASH */
         document.body.classList.add("flash");
@@ -322,4 +406,5 @@ setInterval(createHeart,450);
 
 </body>
 </html>
+
 
