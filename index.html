@@ -19,8 +19,8 @@ body{
 }
 
 .box{
-  width:92%;
-  max-width:420px;
+  width:160%;
+  max-width:500px;
   background:rgba(255,255,255,0.75);
   backdrop-filter: blur(20px);
   padding:26px;
@@ -202,8 +202,9 @@ function scan(){
 
   const logs=[
     "🔍 Đang quét thông tin...",
+    "💬 Kiểm tra messenger..."
     "💬 Phân tích người hay nhắn tin",
-    "📸 Xem lại khoảnh khắc",
+    "📸 Xem lại khoảnh khắc đáng yêu",
     "😳 Phát hiện tín hiệu",
     "💗 Tìm thấy rung động",
     "✨ Xác định danh tính..."
@@ -241,16 +242,18 @@ function showResult(name){
 
   const results=[
     "CHÍNH BẠN 😳",
-    "Người ngồi cạnh bạn 👀",
+    "Người bạn đang để ý 👀",
     "Một người rất gần 💗",
     "Người bạn không ngờ 😏",
     "TOP SECRET 🔒",
     "Người đang đọc kết quả này 🤭",
     "Crush bí mật 💘",
-    "Bạn thân giả vờ vô tư 😶"
+    "Bạn thân giả vờ vô tư 🥹"
+    "Không ai cả 🤣"
+    "Bạn đã bị troll 😂"
   ];
 
-  // 🎯 CHỌN NGẪU NHIÊN 5 KẾT QUẢ
+  // 🎯 CHỌN NGẪU NHIÊN 7 KẾT QUẢ
   const pool=[];
   while(pool.length<5){
     const r=results[Math.floor(Math.random()*results.length)];
@@ -272,9 +275,9 @@ function showResult(name){
   const spin=setInterval(()=>{
     resultEl.textContent =
       pool[Math.floor(Math.random()*pool.length)];
-  },70);
+  },80);
 
- // 🎯 Sau 2s → chốt
+ // 🎯 Sau 3s → chốt
 setTimeout(()=>{
 
   clearInterval(spin);
@@ -292,14 +295,14 @@ setTimeout(()=>{
 
   // 💥 flash
   document.body.classList.add("flash");
-  setTimeout(()=>document.body.classList.remove("flash"),300);
+  setTimeout(()=>document.body.classList.remove("flash"),400);
 
   // 💗 tim nổ
   for(let i=0;i<30;i++){
     createHeart();
   }
 
-},2000);
+},3000);
   }
 
 /* ===== TIM BAY ===== */
@@ -319,4 +322,5 @@ setInterval(createHeart,450);
 </script>
 </body>
 </html>
+
 
