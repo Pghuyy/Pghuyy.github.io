@@ -202,12 +202,12 @@ function scan(){
 
   const logs=[
     "🔍 Đang quét thông tin...",
-    "💬 Kiểm tra messenger..."
+    "💬 Kiểm tra messenger...",
     "💬 Phân tích người hay nhắn tin",
     "📸 Xem lại khoảnh khắc đáng yêu",
     "😳 Phát hiện tín hiệu",
     "💗 Tìm thấy rung động",
-    "✨ Xác định danh tính..."
+    "✨ Xác định danh tính...",
   ];
 
   let p=0,i=0;
@@ -248,14 +248,14 @@ function showResult(name){
     "TOP SECRET 🔒",
     "Người đang đọc kết quả này 🤭",
     "Crush bí mật 💘",
-    "Bạn thân giả vờ vô tư 🥹"
-    "Không ai cả 🤣"
-    "Bạn đã bị troll 😂"
+    "Bạn thân giả vờ vô tư 🥹",
+    "Không ai cả 🤣",
+    "Bạn đã bị troll 😂",
   ];
 
   // 🎯 CHỌN NGẪU NHIÊN 7 KẾT QUẢ
   const pool=[];
-  while(pool.length<5){
+  while(pool.length<7){
     const r=results[Math.floor(Math.random()*results.length)];
     if(!pool.includes(r)) pool.push(r);
   }
@@ -322,5 +322,6 @@ setInterval(createHeart,450);
 </script>
 </body>
 </html>
+
 
 
